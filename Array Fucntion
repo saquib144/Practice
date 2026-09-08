@@ -1,0 +1,187 @@
+#include <stdio.h>
+
+#define MAX_SIZE 100
+
+// 1. Traversal
+void traverse(int arr[], int size) {
+    if (size == 0) {
+        printf("Array is empty.\n");
+        return;
+    }
+
+    printf("Array elements: ");
+    for (int i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+// 2. Insertion
+void insertElement(int arr[], int *size) {
+    int index, value;
+
+    if (*size >= MAX_SIZE) {
+        printf("Array is full!\n");
+        return;
+    }
+
+    printf("Enter index: ");
+    scanf("%d", &index);
+
+    printf("Enter value: ");
+    scanf("%d", &value);
+
+    if (index < 0 || index > *size) {
+        printf("Index out of bounds!\n");
+        return;
+    }
+
+    // Shift elements to the right
+    for (int i = *size; i > index; i--) {
+        arr[i] = arr[i - 1];
+    }
+
+    arr[index] = value;
+    (*size)++;
+
+    printf("Element inserted successfully.\n");
+}
+
+// 3. Deletion
+void deleteElement(int arr[], int *size) {
+    int index;
+
+    if (*size == 0) {
+        printf("Array is empty!\n");
+        return;
+    }
+
+    printf("Enter index to delete: ");
+    scanf("%d", &index);
+
+    if (index < 0 || index >= *size) {
+        printf("Index out of bounds!\n");
+        return;
+    }
+
+    // Shift elements to the left
+    for (int i = index; i < *size - 1; i++) {
+        arr[i] = arr[i + 1];
+    }
+
+    (*size)--;
+
+    printf("Element deleted successfully.\n");
+}
+
+// 4. Search
+void search(int arr[], int size) {
+    int value;
+    int found = 0;
+
+    printf("Enter value to search: ");
+    scanf("%d", &value);
+
+    for (int i = 0; i < size; i++) {
+        if (arr[i] == value) {
+            printf("Value %d found at index %d.\n", value, i);
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("Value %d not found in the array.\n", value);
+    }
+}
+
+// 5. Sort
+void sortArray(int arr[], int size) {
+    int temp;
+
+    for (int i = 0; i < size - 1; i++) {
+        for (int j = 0; j < size - i - 1; j++) {
+
+            if (arr[j] > arr[j + 1]) {
+                temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+
+    printf("Array sorted in ascending order.\n");
+}
+
+int main() {
+    int arr[MAX_SIZE];
+    int size;
+    int choice;
+
+    // Get initial array
+    printf("Enter the number of elements: ");
+    scanf("%d", &size);
+
+    if (size < 0 || size > MAX_SIZE) {
+        printf("Invalid size!\n");
+        return 0;
+    }
+
+    printf("Enter %d elements:\n", size);
+
+    for (int i = 0; i < size; i++) {
+        scanf("%d", &arr[i]);
+    }
+    printf("Array elements: ");
+    for (int i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+
+    // Menu
+    do {
+        printf("\n ARRAY MENU \n");
+        printf("1. Traverse\n");
+        printf("2. Insert\n");
+        printf("3. Delete\n");
+        printf("4. Search\n");
+        printf("5. Sort\n");
+        printf("6. Exit\n");
+     
+
+        printf("\nEnter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+
+            case 1:
+                traverse(arr, size);
+                break;
+
+            case 2:
+                insertElement(arr, &size);
+                break;
+
+            case 3:
+                deleteElement(arr, &size);
+                break;
+
+            case 4:
+                search(arr, size);
+                break;
+
+            case 5:
+                sortArray(arr, size);
+                break;
+
+            case 6:
+                printf("Exiting program...\n");
+                break;
+
+            default:
+                printf("Invalid choice! Please try again.\n");
+        }
+
+    } while (choice != 6);
+
+    return 0;
+}
