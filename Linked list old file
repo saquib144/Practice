@@ -1,0 +1,282 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+struct Node {
+    int data;
+    struct Node *next;
+};
+
+// Create linked list with initial elements
+void createList(struct Node **head, int n) {
+    struct Node *newNode, *temp;
+
+    for (int i = 0; i < n; i++) {
+        newNode = (struct Node *)malloc(sizeof(struct Node));
+
+        if (newNode == NULL) {
+            printf("Memory allocation failed!\n");
+            return;
+        }
+
+        printf("Enter element %d: ", i + 1);
+        scanf("%d", &newNode->data);
+
+        newNode->next = NULL;
+
+        if (*head == NULL) {
+            *head = newNode;
+        } else {
+            temp = *head;
+
+            while (temp->next != NULL) {
+                temp = temp->next;
+            }
+
+            temp->next = newNode;
+        }
+    }
+}
+
+// 1. Traversal
+void traverse(struct Node *head) {
+    struct Node *temp = head;
+
+    if (head == NULL) {
+        printf("Linked List is empty.\n");
+        return;
+    }
+
+    printf("Linked List: ");
+
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+
+    printf("NULL\n");
+}
+
+// 2. Insertion
+void insert(struct Node **head) {
+    int value, position;
+
+    printf("Enter position: ");
+    scanf("%d", &position);
+
+    printf("Enter value: ");
+    scanf("%d", &value);
+
+    struct Node *newNode =
+        (struct Node *)malloc(sizeof(struct Node));
+
+    if (newNode == NULL) {
+        printf("Memory allocation failed!\n");
+        return;
+    }
+
+    newNode->data = value;
+    newNode->next = NULL;
+
+    // Insert at beginning
+    if (position == 0) {
+        newNode->next = *head;
+        *head = newNode;
+
+        printf("Inserted %d at position %d.\n", value, position);
+        traverse(*head);
+        return;
+    }
+
+    struct Node *temp = *head;
+
+    // Move to previous node
+    for (int i = 0; i < position - 1 && temp != NULL; i++) {
+        temp = temp->next;
+    }
+
+    if (temp == NULL) {
+        printf("Invalid position!\n");
+        free(newNode);
+        return;
+    }
+
+    newNode->next = temp->next;
+    temp->next = newNode;
+
+    printf("Inserted %d at position %d.\n", value, position);
+
+    // Display updated list
+    traverse(*head);
+}
+
+// 3. Deletion
+void deleteNode(struct Node **head) {
+    int position;
+
+    if (*head == NULL) {
+        printf("Linked List is empty.\n");
+        return;
+    }
+
+    printf("Enter position to delete: ");
+    scanf("%d", &position);
+
+    struct Node *temp = *head;
+
+    // Delete first node
+    if (position == 0) {
+        *head = temp->next;
+
+        printf("Deleted element %d from position %d.\n",
+               temp->data, position);
+
+        free(temp);
+
+        traverse(*head);
+        return;
+    }
+
+    // Find previous node
+    for (int i = 0; i < position - 1 && temp != NULL; i++) {
+        temp = temp->next;
+    }
+
+    if (temp == NULL || temp->next == NULL) {
+        printf("Invalid position!\n");
+        return;
+    }
+
+    struct Node *deletedNode = temp->next;
+
+    temp->next = deletedNode->next;
+
+    printf("Deleted element %d from position %d.\n",
+           deletedNode->data, position);
+
+    free(deletedNode);
+
+    // Display updated list
+    traverse(*head);
+}
+
+// 4. Search
+void search(struct Node *head) {
+    int value;
+    int position = 0;
+
+    printf("Enter value to search: ");
+    scanf("%d", &value);
+
+    struct Node *temp = head;
+
+    while (temp != NULL) {
+        if (temp->data == value) {
+            printf("Value %d found at position %d.\n",
+                   value, position);
+            return;
+        }
+
+        temp = temp->next;
+        position++;
+    }
+
+    printf("Value %d not found in the linked list.\n", value);
+}
+
+// 5. Sort
+void sort(struct Node *head) {
+    if (head == NULL) {
+        printf("Linked List is empty.\n");
+        return;
+    }
+
+    struct Node *i;
+    struct Node *j;
+    int temp;
+
+    for (i = head; i->next != NULL; i = i->next) {
+        for (j = i->next; j != NULL; j = j->next) {
+
+            if (i->data > j->data) {
+                temp = i->data;
+                i->data = j->data;
+                j->data = temp;
+            }
+        }
+    }
+
+    printf("Linked List sorted in ascending order.\n");
+
+    // Display sorted list
+    traverse(head);
+}
+
+// Main function
+int main() {
+    struct Node *head = NULL;
+    int n;
+    int choice;
+
+    // Create initial linked list
+    printf("Enter number of elements: ");
+    scanf("%d", &n);
+
+    if (n < 0) {
+        printf("Invalid number of elements!\n");
+        return 0;
+    }
+
+    createList(&head, n);
+
+    printf("\nInitial ");
+    traverse(head);
+
+    // Menu
+    do {
+        printf("\n========== LINKED LIST MENU ==========\n");
+        printf("1. Traversal\n");
+        printf("2. Insert\n");
+        printf("3. Delete\n");
+        printf("4. Search\n");
+        printf("5. Sort\n");
+        printf("6. Exit\n");
+        printf("======================================\n");
+
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+
+            case 1:
+                traverse(head);
+                break;
+
+            case 2:
+                insert(&head);
+                break;
+
+            case 3:
+                deleteNode(&head);
+                break;
+
+            case 4:
+                search(head);
+                break;
+
+            case 5:
+                sort(head);
+                break;
+
+            case 6:
+                printf("Exiting program...\n");
+                break;
+
+            default:
+                printf("Invalid choice! Please try again.\n");
+        }
+
+    } while (choice != 6);
+
+    return 0;
+}
