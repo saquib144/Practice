@@ -1,0 +1,256 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Structure of a node
+struct Node {
+    int data;
+    struct Node *left;
+    struct Node *right;
+};
+
+// Create a new node
+struct Node* createNode(int value) {
+    struct Node* newNode =
+        (struct Node*)malloc(sizeof(struct Node));
+
+    newNode->data = value;
+    newNode->left = NULL;
+    newNode->right = NULL;
+
+    return newNode;
+}
+
+// Insert into BST
+struct Node* insert(struct Node* root, int value) {
+
+    if (root == NULL)
+        return createNode(value);
+
+    if (value < root->data)
+        root->left = insert(root->left, value);
+
+    else if (value > root->data)
+        root->right = insert(root->right, value);
+
+    else
+        printf("Duplicate value not allowed.\n");
+
+    return root;
+}
+
+// Search in BST
+struct Node* search(struct Node* root, int value) {
+
+    if (root == NULL || root->data == value)
+        return root;
+
+    if (value < root->data)
+        return search(root->left, value);
+
+    return search(root->right, value);
+}
+
+// Inorder: Left -> Root -> Right
+void inorder(struct Node* root) {
+
+    if (root == NULL)
+        return;
+
+    inorder(root->left);
+    printf("%d ", root->data);
+    inorder(root->right);
+}
+
+// Preorder: Root -> Left -> Right
+void preorder(struct Node* root) {
+
+    if (root == NULL)
+        return;
+
+    printf("%d ", root->data);
+    preorder(root->left);
+    preorder(root->right);
+}
+
+// Postorder: Left -> Right -> Root
+void postorder(struct Node* root) {
+
+    if (root == NULL)
+        return;
+
+    postorder(root->left);
+    postorder(root->right);
+    printf("%d ", root->data);
+}
+
+// Find minimum
+struct Node* findMin(struct Node* root) {
+
+    while (root != NULL && root->left != NULL)
+        root = root->left;
+
+    return root;
+}
+
+// Find maximum
+struct Node* findMax(struct Node* root) {
+
+    while (root != NULL && root->right != NULL)
+        root = root->right;
+
+    return root;
+}
+
+// Delete from BST
+struct Node* deleteNode(struct Node* root, int value) {
+
+    if (root == NULL) {
+        printf("Value not found.\n");
+        return root;
+    }
+
+    if (value < root->data)
+        root->left = deleteNode(root->left, value);
+
+    else if (value > root->data)
+        root->right = deleteNode(root->right, value);
+
+    else {
+
+        // Node has no left child
+        if (root->left == NULL) {
+            struct Node* temp = root->right;
+            free(root);
+            return temp;
+        }
+
+        // Node has no right child
+        if (root->right == NULL) {
+            struct Node* temp = root->left;
+            free(root);
+            return temp;
+        }
+
+        // Node has two children
+        struct Node* temp = findMin(root->right);
+
+        root->data = temp->data;
+
+        root->right =
+            deleteNode(root->right, temp->data);
+    }
+
+    return root;
+}
+
+// Main function
+int main() {
+
+    struct Node* root = NULL;
+
+    int n, value, choice;
+
+    printf("BST Menu\n");
+
+    printf("Enter number of elements: ");
+    scanf("%d", &n);
+
+    printf("Enter %d elements:\n", n);
+
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &value);
+        root = insert(root, value);
+    }
+
+    do {
+
+        printf("\nMENU\n");
+        printf("1. Insert\n");
+        printf("2. Search\n");
+        printf("3. Delete\n");
+        printf("4. Display All Traversals\n");
+        printf("5. Find Minimum\n");
+        printf("6. Find Maximum\n");
+        printf("7. Exit\n");
+
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+
+            case 1:
+                printf("Enter value to insert: ");
+                scanf("%d", &value);
+
+                root = insert(root, value);
+
+                printf("Value inserted successfully.\n");
+                break;
+
+            case 2:
+                printf("Enter value to search: ");
+                scanf("%d", &value);
+
+                if (search(root, value) != NULL)
+                    printf("%d is found in BST.\n", value);
+                else
+                    printf("%d is not found in BST.\n", value);
+
+                break;
+
+            case 3:
+                printf("Enter value to delete: ");
+                scanf("%d", &value);
+
+                root = deleteNode(root, value);
+
+                printf("Delete operation completed.\n");
+                break;
+
+            case 4:
+
+                printf("\n--- TREE TRAVERSALS ---\n");
+
+                printf("Inorder   : ");
+                inorder(root);
+
+                printf("\nPreorder  : ");
+                preorder(root);
+
+                printf("\nPostorder : ");
+                postorder(root);
+
+                printf("\n");
+
+                break;
+
+            case 5:
+
+                if (root == NULL)
+                    printf("BST is empty.\n");
+                else
+                    printf("Minimum = %d\n", findMin(root)->data);
+
+                break;
+
+            case 6:
+
+                if (root == NULL)
+                    printf("BST is empty.\n");
+                else
+                    printf("Maximum = %d\n", findMax(root)->data);
+
+                break;
+
+            case 7:
+                printf("Exiting program...\n");
+                break;
+
+            default:
+                printf("Invalid choice.\n");
+        }
+
+    } while (choice != 7);
+
+    return 0;
+}
