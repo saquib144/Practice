@@ -1,0 +1,202 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 20
+
+struct Employee
+{
+    int id;
+    char name[30];
+    int age;
+    char department[30];
+    float salary;
+};
+
+struct Employee emp[MAX];
+int n = 0;
+
+void insert()
+{
+    if (n >= MAX)
+    {
+        printf("Dictionary is full.\n");
+        return;
+    }
+
+    int id;
+
+    printf("Enter Employee ID: ");
+    scanf("%d", &id);
+
+    for (int i = 0; i < n; i++)
+    {
+        if (emp[i].id == id)
+        {
+            printf("Employee ID already exists.\n");
+            return;
+        }
+    }
+
+    emp[n].id = id;
+
+    printf("Enter Name: ");
+    scanf("%29s", emp[n].name);
+
+    printf("Enter Age: ");
+    scanf("%d", &emp[n].age);
+
+    printf("Enter Department: ");
+    scanf("%29s", emp[n].department);
+
+    printf("Enter Salary: ");
+    scanf("%f", &emp[n].salary);
+
+    n++;
+
+    printf("Employee inserted successfully.\n");
+}
+
+void deleteEmployee()
+{
+    int id, found = 0;
+
+    printf("Enter Employee ID to delete: ");
+    scanf("%d", &id);
+
+    for (int i = 0; i < n; i++)
+    {
+        if (emp[i].id == id)
+        {
+            for (int j = i; j < n - 1; j++)
+            {
+                emp[j] = emp[j + 1];
+            }
+
+            n--;
+            found = 1;
+
+            printf("Employee deleted successfully.\n");
+            break;
+        }
+    }
+
+    if (!found)
+        printf("Employee not found.\n");
+}
+
+void sortEmployees()
+{
+    struct Employee temp;
+
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = 0; j < n - i - 1; j++)
+        {
+            if (emp[j].id > emp[j + 1].id)
+            {
+                temp = emp[j];
+                emp[j] = emp[j + 1];
+                emp[j + 1] = temp;
+            }
+        }
+    }
+
+    printf("Employees sorted by ID.\n");
+}
+
+void searchEmployee()
+{
+    int id, found = 0;
+
+    printf("Enter Employee ID to search: ");
+    scanf("%d", &id);
+
+    for (int i = 0; i < n; i++)
+    {
+        if (emp[i].id == id)
+        {
+            printf("\nEmployee Found!\n");
+            printf("ID         : %d\n", emp[i].id);
+            printf("Name       : %s\n", emp[i].name);
+            printf("Age        : %d\n", emp[i].age);
+            printf("Department : %s\n", emp[i].department);
+            printf("Salary     : %.2f\n", emp[i].salary);
+
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found)
+        printf("Employee not found.\n");
+}
+
+void display()
+{
+    if (n == 0)
+    {
+        printf("No employee records available.\n");
+        return;
+    }
+
+    printf("\nID    Name       Age   Department    Salary\n");
+
+    for (int i = 0; i < n; i++)
+    {
+        printf("%-6d%-11s%-6d%-15s%.2f\n",
+        emp[i].id, emp[i].name, emp[i].age,
+        emp[i].department, emp[i].salary);
+    }
+}
+
+int main()
+{
+    int choice;
+
+    do
+    {
+        printf("\n--- Employee Data Dictionary ---\n");
+        printf("1. Insert Employee\n");
+        printf("2. Delete Employee\n");
+        printf("3. Sort Employees by ID\n");
+        printf("4. Search Employee\n");
+        printf("5. Display All Employees\n");
+        printf("6. Exit\n");
+
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+            case 1:
+                insert();
+                break;
+
+            case 2:
+                deleteEmployee();
+                break;
+
+            case 3:
+                sortEmployees();
+                break;
+
+            case 4:
+                searchEmployee();
+                break;
+
+            case 5:
+                display();
+                break;
+
+            case 6:
+                printf("Exiting program...\n");
+                break;
+
+            default:
+                printf("Invalid choice.\n");
+        }
+
+    } while (choice != 6);
+
+    return 0;
+}
