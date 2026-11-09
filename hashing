@@ -1,0 +1,158 @@
+
+#include <stdio.h>
+#define SIZE 10
+int hashTable[SIZE];
+int hashFunction(int key)
+{
+    return key % SIZE;
+}
+void insert(int key)
+{
+    int index = hashFunction(key);
+    int start = index;
+    while (hashTable[index] != -1)
+    {
+        if (hashTable[index] == key)
+        {
+            printf("Element already exists!\n");
+            return;
+        }
+        index = (index + 1) % SIZE;
+        if (index == start)
+        {
+            printf("Hash Table is Full!\n");
+            return;
+        }
+    }
+    hashTable[index] = key;
+    printf("Element inserted successfully!\n");
+}
+void search(int key)
+{
+    int index = hashFunction(key);
+    int start = index;
+    while (hashTable[index] != -1)
+    {
+        if (hashTable[index] == key)
+        {
+            printf("Element found at index %d\n", index);
+            return;
+        }
+        index = (index + 1) % SIZE;
+        if (index == start)
+            break;
+    }
+    printf("Element not found!\n");
+}
+
+void deleteElement(int key)
+{
+    int index = hashFunction(key);
+    int start = index;
+    while (hashTable[index] != -1)
+    {
+        if (hashTable[index] == key)
+        {
+            hashTable[index] = -2;
+            printf("Element deleted successfully!\n");
+            return;
+        }
+        index = (index + 1) % SIZE;
+        if (index == start)
+            break;
+    }
+    printf("Element not found!\n");
+}
+void display()
+{
+    int i;
+    printf("\nHash Table:\n");
+    for (i = 0; i < SIZE; i++)
+    {
+        if (hashTable[i] >= 0)
+            printf("Index %d : %d\n", i, hashTable[i]);
+        else
+            printf("Index %d : Empty\n", i);
+    }
+}
+void update(int oldKey, int newKey)
+{
+    int index = hashFunction(oldKey);
+    int start = index;
+    while (hashTable[index] != -1)
+    {
+        if (hashTable[index] == oldKey)
+        {
+            hashTable[index] = -2;
+            insert(newKey);
+            printf("Element updated successfully!\n");
+            return;
+        }
+        index = (index + 1) % SIZE;
+        if (index == start)
+            break;
+    }
+    printf("Element not found!\n");
+}
+int main()
+{
+    int i, choice, key, newKey;
+    for (i = 0; i < SIZE; i++)
+        hashTable[i] = -1;
+    do
+    {
+        printf("\n--- HASHING OPERATIONS ---\n");
+        printf("1. Insert\n");
+        printf("2. Search\n");
+        printf("3. Delete\n");
+        printf("4. Display\n");
+        printf("5. Update\n");
+        printf("6. Exit\n");
+
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+            case 1:
+                printf("Enter key: ");
+                scanf("%d", &key);
+                insert(key);
+                break;
+
+            case 2:
+                printf("Enter key to search: ");
+                scanf("%d", &key);
+                search(key);
+                break;
+
+            case 3:
+                printf("Enter key to delete: ");
+                scanf("%d", &key);
+                deleteElement(key);
+                break;
+
+            case 4:
+                display();
+                break;
+
+            case 5:
+                printf("Enter old key: ");
+                scanf("%d", &key);
+                printf("Enter new key: ");
+                scanf("%d", &newKey);
+                update(key, newKey);
+                break;
+
+            case 6:
+                printf("Exiting program...\n");
+                break;
+
+            default:
+                printf("Invalid choice!\n");
+        }
+
+    } while (choice != 6);
+
+    return 0;
+}
